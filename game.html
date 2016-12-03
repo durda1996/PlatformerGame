@@ -15,21 +15,21 @@
  
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
-    width = 500,
-    height = 200,
+    width = 1000,
+    height = 400,
     player = {
       x : width/2,
-      y : height - 5,
-      width : 16,
-      height : 16,
+      y : height - 50,
+      width : 35,
+      height : 50,
       speed: 3,
       velX: 0,
       velY: 0,
       jumping: false
     },
     keys = [],
-    friction = 0.6,
-    gravity = 0.25;
+    friction = 0.8,
+    gravity = 0.17;
     
     var boxes = []
  
