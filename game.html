@@ -31,7 +31,7 @@ var canvas = document.getElementById("canvas"),
     friction = 0.8,
     gravity = 0.17;
     
-    var boxes = []
+    var boxes = [];
  
     // dimensions
     boxes.push({
@@ -86,7 +86,7 @@ var canvas = document.getElementById("canvas"),
 				continue;
 			
 			if(!up && boxes[i].y > player.y && player.velY > 0){
-				player.y = boxes[i].y - player.width;
+				player.y = boxes[i].y - player.height;
 				player.velY = 0;
 				player.jumping = false;
 				continue;
@@ -97,16 +97,19 @@ var canvas = document.getElementById("canvas"),
 				player.y = boxes[i].y + boxes[i].height;
 				player.velY = 0;
 				jumping = false;
-				continue;
 			}
+			
+			
+			left = boxes[i].x >= player.x + player.width;
+			right = boxes[i].x + boxes[i].width <= player.x;
 			
 			if(!left && boxes[i].x > player.x)
 			{
-				player.x = boxes[i].x - player.height;
+				player.x = boxes[i].x - player.width;
 				player.velX = 0;
 			}
 			
-			if(!right && boxes[i].x <= player.x)
+			if(!right && boxes[i].x + boxes[i].width <= player.x + player.width)
 			{
 				player.x = boxes[i].x + boxes[i].width;
 				player.velX = 0;
