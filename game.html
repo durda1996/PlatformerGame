@@ -55,10 +55,46 @@ var canvas = document.getElementById("canvas"),
  
     canvas.width = width;
     canvas.height = height;
- 
-    function update(){
-      // check keys
-        if (keys[38] || keys[32]) {
+	
+	function render()
+	{
+		ctx.clearRect(0,0,width,height);
+        
+		ctx.fillStyle = "black";
+		ctx.beginPath();
+        for (var i = 0; i < boxes.length; i++) {
+                ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+            }
+		ctx.fill();
+		ctx.fillStyle = "red";
+		ctx.fillRect(player.x, player.y, player.width, player.height);
+		requestAnimationFrame(update);
+	}
+	
+	function updateSprites()
+	{
+	}
+	
+	function updateGameWorld()
+	{
+		player.velX *= friction;
+        player.velY += gravity;
+        player.x += player.velX;
+        player.y += player.velY;
+        if (player.x >= width - player.width) {
+            player.x = width - player.width;
+        } else if (player.x <= 0) {         
+            player.x = 0;     
+        }    
+        if(player.y >= height - player.height){
+            player.y = height - player.height;
+            player.jumping = false;
+        }
+	}
+	
+	function updateControls()
+	{
+		if (keys[38] || keys[32]) {
             // up arrow or space
           if(!player.jumping){
            player.jumping = true;
@@ -77,30 +113,15 @@ var canvas = document.getElementById("canvas"),
                 player.velX--;
             }
         }
-        player.velX *= friction;
-        player.velY += gravity;
-        player.x += player.velX;
-        player.y += player.velY;
-        if (player.x >= width - player.width) {
-            player.x = width - player.width;
-        } else if (player.x <= 0) {         
-            player.x = 0;     
-        }    
-        if(player.y >= height - player.height){
-            player.y = height - player.height;
-            player.jumping = false;
-        }
-      ctx.clearRect(0,0,width,height);
+	}
+	
+    function update(){
+      // check keys
         
-      ctx.fillStyle = "black";
-      ctx.beginPath();
-        for (var i = 0; i < boxes.length; i++) {
-                ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
-            }
-      ctx.fill();
-      ctx.fillStyle = "red";
-      ctx.fillRect(player.x, player.y, player.width, player.height);
-      requestAnimationFrame(update);
+        updateControls();
+		updateGameWorld();
+		updateSprites();
+		render();
     }
     //setup event listeners
     document.body.addEventListener("keydown", function(e) {
