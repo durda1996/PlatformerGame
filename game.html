@@ -19,17 +19,25 @@ var canvas = document.getElementById("canvas"),
     height = 200,
     player = {
       x : width/2,
-      y : height - 7,
-      width : 7,
-      height : 7,
+      y : height - 8,
+      width : 8,
+      height : 8,
       speed: 3,
       velX: 0,
       velY: 0,
       jumping: false
     },
+	platform = 
+	{
+		x : width/3,
+		y : 3*height/4,
+		width : 16,
+		height : 8
+	},
     keys = [],
     friction = 0.8,
-    gravity = 0.2;
+    gravity = 0.3;
+	
  
 canvas.width = width;
 canvas.height = height;
@@ -76,9 +84,12 @@ function update(){
   ctx.clearRect(0,0,width,height);
   ctx.fillStyle = "red";
   ctx.fillRect(player.x, player.y, player.width, player.height);
+  ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
  
   requestAnimationFrame(update);
 }
+
+function collision()
  
 //setup event listeners
 document.body.addEventListener("keydown", function(e) {
