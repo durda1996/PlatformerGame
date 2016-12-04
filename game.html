@@ -73,9 +73,30 @@ var canvas = document.getElementById("canvas"),
 	
 	function updateGameWorld()
 	{
+		player.velX *= friction;
+		if(player.jumping)
+        player.velY += gravity;
+		
+		oldX = player.x;
+		oldY = player.y;
+		
+        player.x += player.velX;
+        player.y += player.velY;
+	
 		player.jumping = true;
 		
+		if (player.x >= width - player.width) {
+            player.x = width - player.width;
+        } else if (player.x <= 0) {         
+            player.x = 0;     
+        }
+		
         for (var i = 0; i < boxes.length; i++) {
+			
+			var oldDown = boxes[i].y + boxes[i].height <= oldY;
+			var oldUp = boxes[i].y >= oldY + player.height;
+			var oldLeft = boxes[i].x >= oldX + player.width;
+			var oldRight = boxes[i].x + boxes[i].width <= oldX;
 			
 			var down = boxes[i].y + boxes[i].height <= player.y;
 			var up = boxes[i].y >= player.y + player.height;
@@ -116,23 +137,12 @@ var canvas = document.getElementById("canvas"),
 			}
 		}
 		
-		player.velX *= friction;
-		if(player.jumping)
-        player.velY += gravity;
-		
-        player.x += player.velX;
-        player.y += player.velY;
-		
-        if (player.x >= width - player.width) {
-            player.x = width - player.width;
-        } else if (player.x <= 0) {         
-            player.x = 0;     
-        }
-		
-        if(player.y >= height - player.height){
+		if(player.y >= height - player.height){
             player.y = height - player.height;
             player.jumping = false;
         }
+        
+        
 	}
 	
 	function updateControls()
