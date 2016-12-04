@@ -17,6 +17,7 @@
     
     var backAudio = new Audio('audio/backMusic.mp3');
     backAudio.play();
+    var jumpAudio = new Audio('audio/jump.wav')
  
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
@@ -172,6 +173,7 @@ var canvas = document.getElementById("canvas"),
           if(!player.jumping){
            player.jumping = true;
            player.velY = -player.speed*4;
+           jumpAudio.play();
           }
         }
         if (keys[39]) {
