@@ -12,67 +12,99 @@
     var requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
     window.requestAnimationFrame = requestAnimationFrame;
 })();
+    
+    document.getElementById('canvas').style.backgroundImage = "url('images/walk/background.jpg')";
  
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
-    width = 1000,
-    height = 400,
+    width = 1135,
+    height = 568,
     player = {
       x : width/2,
       y : height - 50,
-      width : 35,
+      width : 40,
       height : 50,
       speed: 3,
       velX: 0,
       velY: 0,
-      jumping: false
+      jumping: false,
+      mirror: true
     },
     keys = [],
-    friction = 0.8,
-    gravity = 0.17;
+    friction = 0.85,
+    gravity = 0.4;
     
-    var boxes = []
+    var boxes = [];
  
     // dimensions
-    boxes.push({
-        x: 0,
-        y: 0,
-        width: 10,
-        height: height
-    });
-    boxes.push({
-        x: 0,
-        y: height - 2,
-        width: width,
-        height: 50
-    });
-    boxes.push({
-        x: width - 10,
-        y: 0,
-        width: 50,
-        height: height
-    });
+//    boxes.push({
+//        x: 0,
+//        y: 0,
+//        width: 10,
+//        height: height
+//    });
+//    boxes.push({
+//        x: 0,
+//        y: height - 2,
+//        width: width,
+//        height: 50
+//    });
+//    boxes.push({
+//        x: width - 10,
+//        y: 0,
+//        width: 50,
+//        height: height
+//    });
  
+        var move = new Array();
+        var moveMirror = new Array();
+        var numOfSpritesMove = 4;
+        for(var i = 0; i < numOfSpritesMove; i++){
+            move[i] = new Image();
+            move[i].src = 'images/walk/'.concat(i + 1).concat('.png');
+            moveMirror[i] = new Image();
+            moveMirror[i].src = 'images/walk/'.concat(i + 1).concat('mirror.png');
+        }
+    
     canvas.width = width;
     canvas.height = height;
 	
 	function render()
 	{
 		ctx.clearRect(0,0,width,height);
-        
-		ctx.fillStyle = "black";
+        ctx.save();
+        drawBoxes();
+		
+        //drawMirroredCharacter();
+        if(player.mirror){
+            drawCharacter();
+        } else {
+            drawMirroredCharacter();
+        }
+		
+		
+	}
+    
+    function drawBoxes(){
+        ctx.fillStyle = "black";
 		ctx.beginPath();
         for (var i = 0; i < boxes.length; i++) {
                 ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
             }
 		ctx.fill();
-		ctx.fillStyle = "red";
-		ctx.fillRect(player.x, player.y, player.width, player.height);
-		requestAnimationFrame(update);
-	}
-	
+    }
+    
+    function drawCharacter(){
+        ctx.drawImage(move[0], player.x, player.y, player.width, player.height);
+    }
+
+	function drawMirroredCharacter(){
+        ctx.drawImage(moveMirror[0], player.x, player.y, player.width, player.height);
+    }
+    
 	function updateSprites()
-	{
+	{   
+        
 	}
 	
 	function updateGameWorld()
@@ -86,8 +118,8 @@ var canvas = document.getElementById("canvas"),
         } else if (player.x <= 0) {         
             player.x = 0;     
         }    
-        if(player.y >= height - player.height){
-            player.y = height - player.height;
+        if(player.y >= height - player.height - 130){
+            player.y = height - player.height - 130;
             player.jumping = false;
         }
 	}
@@ -98,19 +130,21 @@ var canvas = document.getElementById("canvas"),
             // up arrow or space
           if(!player.jumping){
            player.jumping = true;
-           player.velY = -player.speed*2;
+           player.velY = -player.speed*4;
           }
         }
         if (keys[39]) {
             // right arrow
             if (player.velX < player.speed) {             
-                player.velX++;         
+                player.velX++; 
+                player.mirror = true;
              }     
         }     
         if (keys[37]) {         
             // left arrow         
             if (player.velX > -player.speed) {
                 player.velX--;
+                player.mirror = false;
             }
         }
 	}
@@ -122,6 +156,8 @@ var canvas = document.getElementById("canvas"),
 		updateGameWorld();
 		updateSprites();
 		render();
+        
+        requestAnimationFrame(update);
     }
     //setup event listeners
     document.body.addEventListener("keydown", function(e) {
