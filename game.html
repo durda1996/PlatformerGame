@@ -37,24 +37,19 @@ var canvas = document.getElementById("canvas"),
     var boxes = [];
  
     // dimensions
-//    boxes.push({
-//        x: 0,
-//        y: 0,
-//        width: 10,
-//        height: height
-//    });
-//    boxes.push({
-//        x: 0,
-//        y: height - 2,
-//        width: width,
-//        height: 50
-//    });
-//    boxes.push({
-//        x: width - 10,
-//        y: 0,
-//        width: 50,
-//        height: height
-//    });
+    boxes.push({
+        x: 64,
+        y: height - 200,
+        width: 64,
+        height: 32
+    });
+	
+	boxes.push({
+        x: 400,
+        y: height - 200,
+        width: 64,
+        height: 64
+    });
  
         var move = new Array();
         var moveMirror = new Array();
@@ -109,10 +104,53 @@ var canvas = document.getElementById("canvas"),
 	
 	function updateGameWorld()
 	{
+		player.jumping = true;
+		
+        for (var i = 0; i < boxes.length; i++) {
+			
+			var down = boxes[i].y + boxes[i].height <= player.y;
+			var up = boxes[i].y >= player.y + player.height;
+			var left = boxes[i].x >= player.x + player.width;
+			var right = boxes[i].x + boxes[i].width <= player.x;
+			
+			if(down || up || left || right)
+				continue;
+			
+			if(!up && boxes[i].y > player.y && player.velY > 0){
+				player.y = boxes[i].y - player.width;
+				player.velY = 0;
+				player.jumping = false;
+				continue;
+			}
+			
+			if(!down && boxes[i].y + boxes[i].height < player.y + player.height && player.velY < 0)
+			{ 
+				player.y = boxes[i].y + boxes[i].height;
+				player.velY = 0;
+				jumping = false;
+				continue;
+			}
+			
+			if(!left && boxes[i].x > player.x)
+			{
+				player.x = boxes[i].x - player.height;
+				player.velX = 0;
+			}
+			
+			if(!right && boxes[i].x <= player.x)
+			{
+				player.x = boxes[i].x + boxes[i].width;
+				player.velX = 0;
+			}
+		}
+		
 		player.velX *= friction;
+		if(player.jumping)
         player.velY += gravity;
+		
         player.x += player.velX;
         player.y += player.velY;
+		
         if (player.x >= width - player.width) {
             player.x = width - player.width;
         } else if (player.x <= 0) {         
