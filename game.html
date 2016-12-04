@@ -40,6 +40,8 @@ var canvas = document.getElementById("canvas"),
     friction = 0.85,
     gravity = 0.4;
     
+	var collision = false;
+	
     var boxes = [];
  
     // dimensions
@@ -88,6 +90,8 @@ var canvas = document.getElementById("canvas"),
     
     function drawBoxes(){
         ctx.fillStyle = "black";
+		if(collision)
+			ctx.fillStyle = "red";
 		ctx.beginPath();
         for (var i = 0; i < boxes.length; i++) {
                 ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
@@ -110,62 +114,67 @@ var canvas = document.getElementById("canvas"),
 	
 	function updateGameWorld()
 	{
-		player.jumping = true;
-		
-        for (var i = 0; i < boxes.length; i++) {
-			
-			var down = boxes[i].y + boxes[i].height <= player.y;
-			var up = boxes[i].y >= player.y + player.height;
-			var left = boxes[i].x >= player.x + player.width;
-			var right = boxes[i].x + boxes[i].width <= player.x;
-			
-			if(down || up || left || right)
-				continue;
-			
-			if(!up && boxes[i].y > player.y && player.velY > 0){
-				player.y = boxes[i].y - player.width;
-				player.velY = 0;
-				player.jumping = false;
-				continue;
-			}
-			
-			if(!down && boxes[i].y + boxes[i].height < player.y + player.height && player.velY < 0)
-			{ 
-				player.y = boxes[i].y + boxes[i].height;
-				player.velY = 0;
-				jumping = false;
-				continue;
-			}
-			
-			if(!left && boxes[i].x > player.x)
-			{
-				player.x = boxes[i].x - player.height;
-				player.velX = 0;
-			}
-			
-			if(!right && boxes[i].x <= player.x)
-			{
-				player.x = boxes[i].x + boxes[i].width;
-				player.velX = 0;
-			}
-		}
-		
 		player.velX *= friction;
 		if(player.jumping)
         player.velY += gravity;
 		
+		
         player.x += player.velX;
         player.y += player.velY;
+	
+		player.jumping = true;
 		
-        if (player.x >= width - player.width) {
+		if (player.x >= width - player.width) {
             player.x = width - player.width;
         } else if (player.x <= 0) {         
             player.x = 0;     
-        }    
-        if(player.y >= height - player.height - 130){
-            player.y = height - player.height - 130;
+        }
+		
+		collision = false;
+		
+		for (var i = 0; i < boxes.length; i++) {
+			var vecX = (player.x + (player.width / 2)) - (boxes[i].x + (boxes[i].width / 2));
+			var vecY = (player.y + (player.height / 2)) - (boxes[i].y + (boxes[i].height / 2));
+			
+			var hHeight = (player.height + boxes[i].height)/2;
+			var hWidth= (player.width + boxes[i].width)/2;
+			
+			if (Math.abs(vecX) < hWidth && Math.abs(vecY) < hHeight) {         // figures out on which side we are colliding (top, bottom, left, or right)         var oX = hWidths - Math.abs(vX),             oY = hHeights - Math.abs(vY);         if (oX >= oY) {
+				var oX = hWidth - Math.abs(vecX),             
+					oY = hHeight - Math.abs(vecY);         
+				if (oX >= oY) {
+					if (vecY > 0) { // top
+						
+						collision = true;
+						player.y += oY;
+						player.velY = 0;
+					} else { // bottom
+						
+						player.jumping = false;
+						player.y -= oY;
+						player.velY = 0;
+					}
+				} else { 
+			
+					if (vecX > 0) {// left
+						
+						player.x += oX;
+						player.velX = 0;
+					} else { // right
+					
+						player.x -= oX;
+						player.velX = 0;
+					}
+				}
+			}
+		}
+		
+		if(player.y >= height - player.height){
+            player.y = height - player.height;
             player.jumping = false;
         }
+        
+        
 	}
 	
 	function updateControls()
