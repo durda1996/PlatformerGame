@@ -46,17 +46,17 @@ var canvas = document.getElementById("canvas"),
  
     // dimensions
     boxes.push({
-        x: 64,
+        x: width/2 + 50,
         y: height - 200,
-        width: 64,
-        height: 32
+        width: 198,
+        height: 38
     });
 	
 	boxes.push({
-        x: 400,
-        y: height - 200,
-        width: 64,
-        height: 64
+        x: width/2 + 250,
+        y: height - 300,
+        width: 198,
+        height: 38
     });
  
         var move = new Array();
@@ -68,6 +68,8 @@ var canvas = document.getElementById("canvas"),
             moveMirror[i] = new Image();
             moveMirror[i].src = 'images/walk/'.concat(i + 1).concat('mirror.png');
         }
+        var block = new Image();
+        block.src = 'images/walk/block.png';
     
     canvas.width = width;
     canvas.height = height;
@@ -89,14 +91,15 @@ var canvas = document.getElementById("canvas"),
 	}
     
     function drawBoxes(){
-        ctx.fillStyle = "black";
-		if(collision)
-			ctx.fillStyle = "red";
-		ctx.beginPath();
+//        ctx.fillStyle = "black";
+//		if(collision)
+//			ctx.fillStyle = "red";
+//		ctx.beginPath();
         for (var i = 0; i < boxes.length; i++) {
-                ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+//                ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
+            ctx.drawImage(block, boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
             }
-		ctx.fill();
+//		ctx.fill();
     }
     
     function drawCharacter(){
@@ -169,8 +172,8 @@ var canvas = document.getElementById("canvas"),
 			}
 		}
 		
-		if(player.y >= height - player.height){
-            player.y = height - player.height;
+		if(player.y >= height - player.height - 130){
+            player.y = height - player.height - 130;
             player.jumping = false;
         }
         
