@@ -44,6 +44,7 @@ var canvas = document.getElementById("canvas"),
 	
     var boxes = [];
  
+    
     // dimensions
     boxes.push({
         x: width/2 + 50,
@@ -55,6 +56,18 @@ var canvas = document.getElementById("canvas"),
 	boxes.push({
         x: width/2 + 250,
         y: height - 300,
+        width: 198,
+        height: 38
+    });
+    boxes.push({
+        x: width/2 - 100,
+        y: height - 400,
+        width: 198,
+        height: 38
+    });
+    boxes.push({
+        x: width/2 - 250,
+        y: height - 480,
         width: 198,
         height: 38
     });
@@ -103,7 +116,7 @@ var canvas = document.getElementById("canvas"),
     }
     
     function drawCharacter(){
-        ctx.drawImage(move[0], player.x, player.y, player.width, player.height);
+        ctx.drawImage(move[3], player.x, player.y, player.width, player.height);
     }
 
 	function drawMirroredCharacter(){
@@ -114,6 +127,14 @@ var canvas = document.getElementById("canvas"),
 	{   
         
 	}
+    
+    function animationRight(){
+        
+        for(var i = 0; i < 4; i++){
+            ctx.clearRect(player.x, player.y, player.width, player.height);
+            ctx.drawImage(move[i], player.x, player.y, player.width, player.height);
+        }
+    }
 	
 	function updateGameWorld()
 	{
@@ -175,6 +196,9 @@ var canvas = document.getElementById("canvas"),
 		if(player.y >= height - player.height - 130){
             player.y = height - player.height - 130;
             player.jumping = false;
+        } else if (player.y <= 0) {         
+            player.y = 0;
+            player.velY = 0;
         }
         
         
@@ -195,6 +219,7 @@ var canvas = document.getElementById("canvas"),
             if (player.velX < player.speed) {             
                 player.velX++; 
                 player.mirror = true;
+                animationRight();
              }     
         }     
         if (keys[37]) {         
