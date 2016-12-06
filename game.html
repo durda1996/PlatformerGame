@@ -66,6 +66,9 @@ var canvas = document.getElementById("canvas"),
 		var walkRightImg = new Image();
 		walkRightImg.src = 'images/walk/walkRightSprite.png';
 		
+		var walkLeftImg = new Image();
+		walkLeftImg.src = 'images/walk/walkLeftSprite.png';
+		
         var move = new Array();
         var moveMirror = new Array();
         var numOfSpritesMove = 4;
@@ -114,7 +117,7 @@ var canvas = document.getElementById("canvas"),
     }
 
 	function drawMirroredCharacter(){
-        ctx.drawImage(moveMirror[0], player.x, player.y, player.width, player.height);
+        ctx.drawImage(walkLeftImg, 101*(counter%4), 0, 101, 115, player.x, player.y, player.width, player.height);
     }
     
 	function updateSprites()
