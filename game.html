@@ -36,21 +36,18 @@ var canvas = document.getElementById("canvas"),
       jumping: false,
       mirror: true
     },
-	
-	
+
+
     keys = [],
     friction = 0.85,
     gravity = 0.4;
-    
+
 	var offset = 0;
-	
 	var counter = 0;
-	
     var boxes = [];
-
     var fish = [];
+    var blocks = [];
 
-    //adding boxes--------------------------------------------------------------
 
     var d = new Date();
 
@@ -58,6 +55,7 @@ var canvas = document.getElementById("canvas"),
     var thisTime = d.getTime();
     var delta = 0;
 
+    //adding boxes--------------------------------------------------------------
 
     // dimensions
     boxes.push({
@@ -88,6 +86,16 @@ var canvas = document.getElementById("canvas"),
 
     //-----------------------------------------------------------------------
 
+    //adding blocks----------------------------------------------------------
+
+    blocks.push({
+        x:0,
+        y:0,
+        width: 40,
+        height: 40
+    });
+
+    //-----------------------------------------------------------------------
 
 
 
@@ -107,10 +115,10 @@ var canvas = document.getElementById("canvas"),
 
 		var walkRightImg = new Image();
 		walkRightImg.src = 'images/walk/walkRightSprite.png';
-		
+
 		var walkLeftImg = new Image();
 		walkLeftImg.src = 'images/walk/walkLeftSprite.png';
-		
+
         var move = new Array();
         var moveMirror = new Array();
         var numOfSpritesMove = 4;
@@ -128,13 +136,14 @@ var canvas = document.getElementById("canvas"),
 
     canvas.width = width;
     canvas.height = height;
-	
+
 	function render()
 	{
 		ctx.clearRect(0,0,width,height);
         ctx.save();
         drawBoxes();
-		
+        drawBlocks();
+
         //drawMirroredCharacter();
         if(player.mirror){
             //drawCharacter();
@@ -143,10 +152,10 @@ var canvas = document.getElementById("canvas"),
             //drawMirroredCharacter();
             walkLeft();
         }
-		
-		
+
+
 	}
-    
+
     function drawBoxes(){
         for (var i = 0; i < boxes.length; i++) {
             ctx.drawImage(block,  0, 0, 198, 38,  boxes[i].x - offset, boxes[i].y, boxes[i].width, boxes[i].height);
@@ -157,6 +166,14 @@ var canvas = document.getElementById("canvas"),
         }
     }
 
+    function drawBlocks()
+    {
+        for (var i = 0; i < blocks.length; i++)
+        {
+            ctx.drawImage(block, 0, 0, 38, 38, blocks[i].x - offset, blocks[i].y, blocks[i].width, blocks[i].height);
+        }
+    }
+
     function drawCharacter(){
         ctx.drawImage(move[3], player.x, player.y, player.width, player.height);
     }
@@ -164,9 +181,9 @@ var canvas = document.getElementById("canvas"),
 	function drawMirroredCharacter(){
         ctx.drawImage(moveMirror[0], player.x, player.y, player.width, player.height);
     }
-    
+
 	function updateSprites()
-	{   
+	{
         if(player.spriteUpdates && !player.jumping) {
             player.spriteSinceLastUpdate += delta;
             if (player.spriteSinceLastUpdate > 125) {
@@ -177,9 +194,9 @@ var canvas = document.getElementById("canvas"),
         else {
                 player.spriteSinceLastUpdate = 99;
                 player.spriteFrame = 0;
-            }
+        }
 	}
-    
+
 
     function walkRight(){
         ctx.drawImage(walkRightImg, 101*(player.spriteFrame%4), 0, 101, 115, player.x, player.y, player.width, player.height);
@@ -188,39 +205,35 @@ var canvas = document.getElementById("canvas"),
     function walkLeft(){
         ctx.drawImage(walkLeftImg, 101*(player.spriteFrame%4), 0, 101, 115, player.x, player.y, player.width, player.height);
     }
-	
+
 	function updateGameWorld()
 	{
 		player.velX *= friction;
 
 		if(player.jumping)
         player.velY += gravity;
-		
-		
+
         player.x += player.velX;
         player.y += player.velY;
 
-		
 		if (player.x >= width - player.width) {
             player.x = width - player.width;
-        } else if (player.x <= 0) {         
+        } else if (player.x <= 0) {
             player.x = 0;
         }
-
-
 
         player.jumping = true;
 
 		for (var i = 0; i < boxes.length; i++) {
 			var vecX = (player.x + (player.width / 2)) - (boxes[i].x - offset + (boxes[i].width / 2));
 			var vecY = (player.y + (player.height / 2)) - (boxes[i].y + (boxes[i].height / 2));
-			
+
 			var hHeight = (player.height + boxes[i].height)/2;
 			var hWidth= (player.width + boxes[i].width)/2;
-			
+
 			if (Math.abs(vecX) < hWidth && Math.abs(vecY) < hHeight) {         // figures out on which side we are colliding (top, bottom, left, or right)         var oX = hWidths - Math.abs(vX),             oY = hHeights - Math.abs(vY);         if (oX >= oY) {
-				var oX = hWidth - Math.abs(vecX),             
-					oY = hHeight - Math.abs(vecY);         
+				var oX = hWidth - Math.abs(vecX),
+					oY = hHeight - Math.abs(vecY);
 				if (oX >= oY) {
 					if (vecY > 0) { // top
 
@@ -232,21 +245,21 @@ var canvas = document.getElementById("canvas"),
 						player.y -= oY-1;
 						player.velY = 0;
 					}
-				} else { 
-			
+				} else {
+
 					if (vecX > 0) {// left
-						
+
 						player.x += oX;
 						player.velX = 0;
 					} else { // right
-					
+
 						player.x -= oX;
 						player.velX = 0;
 					}
 				}
 			}
 		}
-		
+
 		if(player.y >= height - player.height - 130){
             player.y = height - player.height - 130;
             player.jumping = false;
