@@ -19,7 +19,8 @@
     backAudio.loop = true;
     
     backAudio.play();
-    var jumpAudio = new Audio('audio/jump.wav')
+    var jumpAudio = new Audio('audio/jump.wav');
+    var eatAudio = new Audio('audio/eat.wav');
  
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
@@ -49,6 +50,7 @@ var canvas = document.getElementById("canvas"),
     var boxes = [];
 
     var fish = [];
+    var fishScore = 0;
 
     //adding boxes--------------------------------------------------------------
 
@@ -145,7 +147,9 @@ var canvas = document.getElementById("canvas"),
             //drawMirroredCharacter();
             walkLeft();
         }
-		
+
+        ctx.font="20px Verdana";
+        ctx.fillText("Score: " + fishScore, 20, 20);
 		
 	}
     
@@ -250,15 +254,20 @@ var canvas = document.getElementById("canvas"),
 			}
 		}
 
-		for(var i = 0; i < fish.length; i++){
-            var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
-            var fishVecY = (player.y + (player.height / 2)) - (fish[i].y + (fish[i].height / 2));
+		for(var i = 0; i < fish.length; i++) {
+            if (fish[i].active) {
+                var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
+                var fishVecY = (player.y + (player.height / 2)) - (fish[i].y + (fish[i].height / 2));
 
-            var fishHHeight = (player.height + fish[i].height)/2;
-            var fishHWidth= (player.width + fish[i].width)/2;
+                var fishHHeight = (player.height + fish[i].height) / 2;
+                var fishHWidth = (player.width + fish[i].width) / 2;
 
-            if (Math.abs(fishVecX) < fishHWidth && Math.abs(fishVecY) < fishHHeight)
-                fish[i].active = false;
+                if (Math.abs(fishVecX) < fishHWidth && Math.abs(fishVecY) < fishHHeight) {
+                    fish[i].active = false;
+                    eatAudio.play();
+                    fishScore++;
+                }
+            }
         }
 		
 		if(player.y >= height - player.height - 130){
