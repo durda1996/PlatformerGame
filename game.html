@@ -44,6 +44,8 @@ var canvas = document.getElementById("canvas"),
     
 	var offset = 0;
 	
+	var date = new Date();
+	
 	var counter = 0;
 	
     var boxes = [];
@@ -228,7 +230,9 @@ var canvas = document.getElementById("canvas"),
 	
     function update(){
       // check keys
-        counter++;
+        var timer = new Date();
+		
+		counter+= 0.5;
 		
         updateControls();
 		updateGameWorld();
@@ -236,6 +240,11 @@ var canvas = document.getElementById("canvas"),
 		render();
         
         requestAnimationFrame(update);
+		
+		var deltaTime;
+		do{
+			deltaTime = new Date() - timer;
+		}while (deltaTime < 16);
     }
     //setup event listeners
     document.body.addEventListener("keydown", function(e) {
