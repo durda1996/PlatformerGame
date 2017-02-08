@@ -33,6 +33,9 @@ var canvas = document.getElementById("canvas"),
       speed: 3,
       velX: 0,
       velY: 0,
+      spriteFrame: 0,
+      spriteSinceLastUpdate: 0,
+      spriteUpdates: false,
       jumping: false,
       mirror: true
     },
@@ -44,12 +47,16 @@ var canvas = document.getElementById("canvas"),
     
 	var offset = 0;
 	
-	var date = new Date();
-	
 	var counter = 0;
 	
     var boxes = [];
- 
+
+    var d = new Date();
+
+    var lastTime = d.getTime();
+    var thisTime = d.getTime();
+    var delta = 0;
+
     
     // dimensions
     boxes.push({
@@ -58,7 +65,7 @@ var canvas = document.getElementById("canvas"),
         width: 198,
         height: 38
     });
-	
+
 	boxes.push({
         x: width/2 + 250,
         y: height - 300,
@@ -107,67 +114,67 @@ var canvas = document.getElementById("canvas"),
 		
         //drawMirroredCharacter();
         if(player.mirror){
-            drawCharacter();
+            //drawCharacter();
+            walkRight();
         } else {
-            drawMirroredCharacter();
+            //drawMirroredCharacter();
+            walkLeft();
         }
 		
 		
 	}
     
     function drawBoxes(){
-//        ctx.fillStyle = "black";
-//		if(collision)
-//			ctx.fillStyle = "red";
-//		ctx.beginPath();
         for (var i = 0; i < boxes.length; i++) {
-//                ctx.rect(boxes[i].x, boxes[i].y, boxes[i].width, boxes[i].height);
             ctx.drawImage(block,  0, 0, 198, 38,  boxes[i].x - offset, boxes[i].y, boxes[i].width, boxes[i].height);
             }
-//		ctx.fill();
-    }
-    
-    function drawCharacter(){
-        ctx.drawImage(walkRightImg, 101*(counter%4), 0, 101, 115, player.x, player.y, player.width, player.height);
-    }
-
-	function drawMirroredCharacter(){
-        ctx.drawImage(walkLeftImg, 101*(counter%4), 0, 101, 115, player.x, player.y, player.width, player.height);
     }
     
 	function updateSprites()
 	{   
-        
+        if(player.spriteUpdates && !player.jumping) {
+            player.spriteSinceLastUpdate += delta;
+            if (player.spriteSinceLastUpdate > 125) {
+                player.spriteSinceLastUpdate -= 125;
+                player.spriteFrame++;
+            }
+        }
+        else {
+                player.spriteSinceLastUpdate = 99;
+                player.spriteFrame = 0;
+            }
 	}
     
-    function animationRight(){
-        
-        for(var i = 0; i < 4; i++){
-            ctx.clearRect(player.x, player.y, player.width, player.height);
-            ctx.drawImage(move[i], player.x, player.y, player.width, player.height);
-        }
+    function walkRight(){
+        ctx.drawImage(walkRightImg, 101*(player.spriteFrame%4), 0, 101, 115, player.x, player.y, player.width, player.height);
+    }
+    
+    function walkLeft(){
+        ctx.drawImage(walkLeftImg, 101*(player.spriteFrame%4), 0, 101, 115, player.x, player.y, player.width, player.height);
     }
 	
 	function updateGameWorld()
 	{
 		player.velX *= friction;
+
 		if(player.jumping)
         player.velY += gravity;
 		
 		
         player.x += player.velX;
         player.y += player.velY;
-	
-		player.jumping = true;
+
 		
 		if (player.x >= width - player.width) {
             player.x = width - player.width;
         } else if (player.x <= 0) {         
-            player.x = 0;     
+            player.x = 0;
         }
-		
-		collision = false;
-		
+
+
+
+        player.jumping = true;
+
 		for (var i = 0; i < boxes.length; i++) {
 			var vecX = (player.x + (player.width / 2)) - (boxes[i].x - offset + (boxes[i].width / 2));
 			var vecY = (player.y + (player.height / 2)) - (boxes[i].y + (boxes[i].height / 2));
@@ -180,14 +187,13 @@ var canvas = document.getElementById("canvas"),
 					oY = hHeight - Math.abs(vecY);         
 				if (oX >= oY) {
 					if (vecY > 0) { // top
-						
-						collision = true;
+
 						player.y += oY;
 						player.velY = 0;
 					} else { // bottom
-						
+
 						player.jumping = false;
-						player.y -= oY;
+						player.y -= oY-1;
 						player.velY = 0;
 					}
 				} else { 
@@ -208,12 +214,9 @@ var canvas = document.getElementById("canvas"),
 		if(player.y >= height - player.height - 130){
             player.y = height - player.height - 130;
             player.jumping = false;
-        } else if (player.y <= 0) {         
-            player.y = 0;
-            player.velY = 0;
         }
 		
-		if(player.x > width*2/3)
+		if(player.x >= width*2/3)
 		{
 			offset += player.x - width*2/3;
 			player.x = width*2/3;
@@ -222,27 +225,24 @@ var canvas = document.getElementById("canvas"),
 			offset += player.x - width*1/3;
 			player.x = width*1/3;
 		}
-        
-        
 	}
 	
 	function updateControls()
 	{
-		if (keys[38] || keys[32]) {
-            // up arrow or space
-          if(!player.jumping){
-           player.jumping = true;
-           player.velY = -player.speed*4;
-           jumpAudio.play();
-          }
-        }
+
+
+        player.spriteUpdates = false;
+
         if (keys[39]) {
             // right arrow
             if (player.velX < player.speed) {             
                 player.velX++; 
                 player.mirror = true;
-                animationRight();
-             }     
+//                walkRight();
+//                counter++;
+             }
+             player.spriteUpdates = true;
+
         }     
         if (keys[37]) {         
             // left arrow         
@@ -250,26 +250,34 @@ var canvas = document.getElementById("canvas"),
                 player.velX--;
                 player.mirror = false;
             }
+            player.spriteUpdates = true;
+        }
+
+        if (keys[38] || keys[32]) {
+            // up arrow or space
+            if(!player.jumping){
+                player.jumping = true;
+                player.velY = -player.speed*4;
+                jumpAudio.play();
+            }
         }
 	}
 	
     function update(){
       // check keys
-        var timer = new Date();
-		
-		counter+= 0.5;
-		
+        lastTime = thisTime;
+
+        counter++;
+
         updateControls();
 		updateGameWorld();
 		updateSprites();
 		render();
         
         requestAnimationFrame(update);
-		
-		var deltaTime;
-		do{
-			deltaTime = new Date() - timer;
-		}while (deltaTime < 16);
+        d = new Date();
+        thisTime = d.getTime();
+        delta = thisTime - lastTime;
     }
     //setup event listeners
     document.body.addEventListener("keydown", function(e) {
@@ -280,7 +288,11 @@ var canvas = document.getElementById("canvas"),
     });
     //instead window.onload
     window.addEventListener("load",function(){
+        d = new Date();
+        thisTime = lastTime = d.getTime();
         update();
+
+
     });
     
 </script>
