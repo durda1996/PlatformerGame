@@ -19,7 +19,8 @@
     backAudio.loop = true;
     
     backAudio.play();
-    var jumpAudio = new Audio('audio/jump.wav')
+    var jumpAudio = new Audio('audio/jump.wav');
+    var eatAudio = new Audio('audio/eat.wav');
  
 var canvas = document.getElementById("canvas"),
     ctx = canvas.getContext("2d"),
@@ -41,14 +42,15 @@ var canvas = document.getElementById("canvas"),
     keys = [],
     friction = 0.85,
     gravity = 0.4;
-    
+
 	var offset = 0;
-	
+
 	var counter = 0;
-	
+
     var boxes = [];
 
     var fish = [];
+    var fishScore = 0;
     var blocks = [];
 
     //adding boxes--------------------------------------------------------------
@@ -161,6 +163,12 @@ var canvas = document.getElementById("canvas"),
             //drawMirroredCharacter();
             walkLeft();
         }
+
+
+
+        ctx.font="20px Verdana";
+        ctx.fillText("Score: " + fishScore, 20, 20);
+
 	}
 
     function drawBoxes(){
@@ -347,7 +355,7 @@ var canvas = document.getElementById("canvas"),
         player.x += player.velX;
         player.y += player.velY;
 
-		
+
 		if (player.x >= width - player.width) {
             player.x = width - player.width;
         } else if (player.x <= 0) {
@@ -357,16 +365,60 @@ var canvas = document.getElementById("canvas"),
         player.jumping = true;
 
         collisionPlayer((player));
+		for (var i = 0; i < boxes.length; i++) {
+			var vecX = (player.x + (player.width / 2)) - (boxes[i].x - offset + (boxes[i].width / 2));
+			var vecY = (player.y + (player.height / 2)) - (boxes[i].y + (boxes[i].height / 2));
+
+			var hHeight = (player.height + boxes[i].height)/2;
+			var hWidth= (player.width + boxes[i].width)/2;
+
+			if (Math.abs(vecX) < hWidth && Math.abs(vecY) < hHeight) {         // figures out on which side we are colliding (top, bottom, left, or right)         var oX = hWidths - Math.abs(vX),             oY = hHeights - Math.abs(vY);         if (oX >= oY) {
+				var oX = hWidth - Math.abs(vecX),
+					oY = hHeight - Math.abs(vecY);
+				if (oX >= oY) {
+					if (vecY > 0) { // top
+
+						player.y += oY;
+						player.velY = 0;
+					} else { // bottom
+
+						player.jumping = false;
+						player.y -= oY-1;
+						player.velY = 0;
+					}
+				} else {
+
+					if (vecX > 0) {// left
+
+						player.x += oX;
+						player.velX = 0;
+					} else { // right
+
+						player.x -= oX;
+						player.velX = 0;
+					}
+				}
+			}
+		}
+
+		for(var i = 0; i < fish.length; i++) {
+            if (fish[i].active) {
+                var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
+                var fishVecY = (player.y + (player.height / 2)) - (fish[i].y + (fish[i].height / 2));
 
 		for(var i = 0; i < fish.length; i++){
             var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
             var fishVecY = (player.y + (player.height / 2)) - (fish[i].y + (fish[i].height / 2));
 
-            var fishHHeight = (player.height + fish[i].height)/2;
-            var fishHWidth= (player.width + fish[i].width)/2;
+                var fishHHeight = (player.height + fish[i].height) / 2;
+                var fishHWidth = (player.width + fish[i].width) / 2;
 
-            if (Math.abs(fishVecX) < fishHWidth && Math.abs(fishVecY) < fishHHeight)
-                fish[i].active = false;
+                if (Math.abs(fishVecX) < fishHWidth && Math.abs(fishVecY) < fishHHeight) {
+                    fish[i].active = false;
+                    eatAudio.play();
+                    fishScore++;
+                }
+            }
         }
 
 		if(player.y >= height - player.height - 130){
