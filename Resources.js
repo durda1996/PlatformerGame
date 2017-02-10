@@ -8,6 +8,7 @@ var jumpAudio = new Audio('audio/jump.wav');
 var eatAudio = new Audio('audio/eat.wav');
 
 
+
 // Images
 var walkRightImg = new Image();
 walkRightImg.src = 'images/walk/walkRightSprite.png';
