@@ -94,7 +94,7 @@ function restart()
     player.velY = 0;
     player.velX = 0;
     player.x = level[current].x - offset;
-    player.y = 0;
+    player.y = level[current].y;
     blocks = [];
     for(var i = 0; i < level[current].blocks.length; i++)
     {
