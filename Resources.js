@@ -16,8 +16,8 @@ walkRightImg.src = 'images/walk/walkRightSprite.png';
 var walkLeftImg = new Image();
 walkLeftImg.src = 'images/walk/walkLeftSprite.png';
 
-var block = new Image();
-block.src = 'images/walk/block.png';
+var blockImg = new Image();
+blockImg.src = 'images/walk/block.png';
 
 var fishImage = new Image();
 fishImage.src = 'images/walk/fishSmall.png';

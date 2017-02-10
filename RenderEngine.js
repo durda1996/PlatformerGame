@@ -17,26 +17,25 @@ function render()
 
     ctx.font="20px Verdana";
     ctx.fillText("Score: " + fishScore, 20, 20);
-    //ctx.fillText("Velocity: " + player.velX, 20, 40);
 }
 
 function drawBoxes(){
     for (var i = 0; i < boxes.length; i++) {
-        ctx.drawImage(block,  0, 0, 198, 38,  boxes[i].x - offset, boxes[i].y, boxes[i].width, boxes[i].height);
+        ctx.drawImage(blockImg,  0, 0, 198, 38,  boxes[i].x - offset, boxes[i].y, box.width, box.height);
     }
 }
 
 function drawFish(){
     for (var i = 0; i < fish.length; i++) {
         if(fish[i].active)
-            ctx.drawImage(fishImage,  0, 0, 40, 29, fish[i].x - offset, fish[i].y, fish[i].width, fish[i].height);
+            ctx.drawImage(fishImage,  0, 0, 40, 29, fish[i].x - offset, fish[i].y, Fish.width, Fish.height);
     }
 }
 
 function drawBlocks(){
     for (var i = 0; i < blocks.length; i++)
     {
-        ctx.drawImage(block, 0, 0, 38, 38, blocks[i].x - offset, blocks[i].y, blocks[i].width, blocks[i].height);
+        ctx.drawImage(blockImg, 0, 0, 38, 38, blocks[i].x - offset, blocks[i].y, block.width, block.height);
     }
 }
 

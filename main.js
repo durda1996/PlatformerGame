@@ -18,7 +18,7 @@ var canvas = document.getElementById("canvas"),
     height = 568,
     player = {
         x : width/2,
-        y : height - 50,
+        y : 0,
         width : 40,
         height : 50,
         speed: 3,
@@ -33,10 +33,16 @@ var canvas = document.getElementById("canvas"),
 
     keys = [],
     friction = 0.85,
-    gravity = 0.4;
+    gravity = 0.5;
 
 canvas.width = width;
 canvas.height = height;
+
+var initialPos =
+{
+    x : width / 2,
+    y : 0
+}
 
 var d = new Date();
 var lastTime = d.getTime();
@@ -47,61 +53,70 @@ var offset = 0;
 var counter = 0;
 var fishScore = 0;
 
+var box = {
+        width: 198,
+        height: 38
+    };
+var Fish = {
+    width: 40,
+    height: 25
+}
+var block = {
+    width: 40,
+    height: 40
+}
+
 var boxes = [];
 var fish = [];
 var blocks = [];
 
-//adding boxes--------------------------------------------------------------
-boxes.push({
-    x: width/2 + 50,
-    y: height - 200,
-    width: 198,
-    height: 38
-});
+//var level = level1;
 
-boxes.push({
-    x: width/2 + 250,
-    y: height - 300,
-    width: 198,
-    height: 38
-});
-boxes.push({
-    x: width/2 - 100,
-    y: height - 400,
-    width: 198,
-    height: 38
-});
-boxes.push({
-    x: width/2 - 250,
-    y: height - 480,
-    width: 198,
-    height: 38
-});
+
+
+//adding boxes--------------------------------------------------------------
+function addBox(x, y, boxArr)
+{
+    boxArr.push({
+        x: x,
+        y: y
+    });
+}
+
+addBox(width/2 + 50, height - 200, boxes);
+addBox(width/2 + 250,height - 300, boxes);
+addBox(width/2 - 100,height - 400, boxes);
+addBox(width/2 - 250,height - 480, boxes);
 
 //adding blocks----------------------------------------------------------
-blocks.push({
-    x:700,
-    y:0,
-    width: 40,
-    height: 40,
-    velX: 0,
-    velY: 0
-});
+function addBlock(x, y, blockArr) {
+        blockArr.push({
+        x:x,
+        y:y,
+        velX: 0,
+        velY: 0
+    });
+}
+
+
+addBlock(700, 0, blocks);
+
+
 
 //adding fishes----------------------------------------------------------
 
-function addFish(x, y) {
-    fish.push({
+function addFish(x, y, fishArr) {
+    fishArr.push({
         x: x,
         y: y,
-        width: 40,
-        height: 25,
         active: true
     });
 }
 
-addFish(width/2 + 100, height - 240);
-addFish(200, 200);
+addFish(width/2 + 100, height - 240, fish);
+addFish(200, 200, fish);
+
+
 
 //-----------------------------------------------------------------------
 
