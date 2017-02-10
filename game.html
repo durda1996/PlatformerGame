@@ -401,10 +401,10 @@ var canvas = document.getElementById("canvas"),
 			}
 		}
 
-		for(var i = 0; i < fish.length; i++) {
-            if (fish[i].active) {
-                var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
-                var fishVecY = (player.y + (player.height / 2)) - (fish[i].y + (fish[i].height / 2));
+//		for(var i = 0; i < fish.length; i++) {
+//            if (fish[i].active) {
+//                var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
+//                var fishVecY = (player.y + (player.height / 2)) - (fish[i].y + (fish[i].height / 2));
 
 		for(var i = 0; i < fish.length; i++){
             var fishVecX = (player.x + (player.width / 2)) - (fish[i].x - offset + (fish[i].width / 2));
@@ -435,7 +435,6 @@ var canvas = document.getElementById("canvas"),
 			offset += player.x - width*1/3;
 			player.x = width*1/3;
 		}
-	}
 	
 	function updateControls()
 	{
@@ -502,6 +501,7 @@ var canvas = document.getElementById("canvas"),
 
 
     });
+
     
 </script>
 </body>
