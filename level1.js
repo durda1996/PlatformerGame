@@ -1,22 +1,14 @@
 /**
  * Created by Oldanko on 10.02.2017.
  */
-level1 = {
-    startX: width/2,
-    startY: 0,
-    boxes: [],
+var level1 = {
+    x: 400,
+    y: 0,
+    boxes: [{x: 350, y: 200}, {x : 550, y: 250}, {x : 800, y: 400}],
     blocks: [],
-    fish: []
+    fish: [{x:960, y: 360}]
 };
 
 
-addBox(width/2 + 50, height - 200, level1.boxes);
-addBox(width/2 + 250,height - 300, level1.boxes);
-addBox(width/2 - 100,height - 400, level1.boxes);
-addBox(width/2 - 250,height - 480, level1.boxes);
 
 
-addBlock(700, 0, level1.blocks);
-
-addFish(width/2 + 100, height - 240, level1.fish);
-addFish(200, 200, level1.fish);

@@ -182,10 +182,7 @@ function updateGameWorld()
         }
 
         if(player.y > canvas.height){
-            player.x = initialPos.x;
-            player.y = initialPos.y;
-            player.velY = 0;
-
+            restart();
         }
 
         if(player.x >= width*2/3)

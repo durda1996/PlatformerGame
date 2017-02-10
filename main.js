@@ -38,11 +38,6 @@ var canvas = document.getElementById("canvas"),
 canvas.width = width;
 canvas.height = height;
 
-var initialPos =
-{
-    x : width / 2,
-    y : 0
-}
 
 var d = new Date();
 var lastTime = d.getTime();
@@ -70,27 +65,54 @@ var boxes = [];
 var fish = [];
 var blocks = [];
 
-//var level = level1;
+var level = level1;
+
+initLevel();
+
+function initLevel()
+{
+    restart();
+
+    boxes = [];
+    for(var i = 0; i < level.boxes.length; i++)
+    {
+        addBox(level.boxes[i].x, level.boxes[i].y);
+    }
+
+    fish = [];
+    for(var i = 0; i < level.fish.length; i++)
+    {
+        addFish(level.fish[i].x, level.fish[i].y);
+    }
+}
 
 
+function restart()
+{
+    player.velY = 0;
+    player.velX = 0;
+    player.x = level.x - offset;
+    player.y = 0;
+    blocks = [];
+    for(var i = 0; i < level.blocks.length; i++)
+    {
+        addBlock(level.blocks[i].x, level.blocks[i].y);
+    }
+}
 
 //adding boxes--------------------------------------------------------------
-function addBox(x, y, boxArr)
+function addBox(x, y)
 {
-    boxArr.push({
+    boxes.push({
         x: x,
         y: y
     });
 }
 
-addBox(width/2 + 50, height - 200, boxes);
-addBox(width/2 + 250,height - 300, boxes);
-addBox(width/2 - 100,height - 400, boxes);
-addBox(width/2 - 250,height - 480, boxes);
 
 //adding blocks----------------------------------------------------------
-function addBlock(x, y, blockArr) {
-        blockArr.push({
+function addBlock(x, y) {
+        blocks.push({
         x:x,
         y:y,
         velX: 0,
@@ -98,23 +120,15 @@ function addBlock(x, y, blockArr) {
     });
 }
 
-
-addBlock(700, 0, blocks);
-
-
-
 //adding fishes----------------------------------------------------------
 
-function addFish(x, y, fishArr) {
-    fishArr.push({
+function addFish(x, y) {
+    fish.push({
         x: x,
         y: y,
         active: true
     });
 }
-
-addFish(width/2 + 100, height - 240, fish);
-addFish(200, 200, fish);
 
 
 

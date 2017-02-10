@@ -17,6 +17,7 @@ function render()
 
     ctx.font="20px Verdana";
     ctx.fillText("Score: " + fishScore, 20, 20);
+
 }
 
 function drawBoxes(){
