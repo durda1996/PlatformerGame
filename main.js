@@ -66,7 +66,7 @@ var fish = [];
 var blocks = [];
 
 
-var level = [level1, level2];
+var level = [level1, level2, level3];
 current = 0;
 
 initLevel();
