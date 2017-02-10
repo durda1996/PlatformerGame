@@ -178,6 +178,8 @@ function updateGameWorld()
                 fish[i].active = false;
                 eatAudio.play();
                 fishScore++;
+                current++;
+                initLevel();
             }
         }
 

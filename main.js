@@ -65,7 +65,9 @@ var boxes = [];
 var fish = [];
 var blocks = [];
 
-var level = level1;
+
+var level = [level1, level2, level3];
+current = 0;
 
 initLevel();
 
@@ -74,15 +76,15 @@ function initLevel()
     restart();
 
     boxes = [];
-    for(var i = 0; i < level.boxes.length; i++)
+    for(var i = 0; i < level[current].boxes.length; i++)
     {
-        addBox(level.boxes[i].x, level.boxes[i].y);
+        addBox(level[current].boxes[i].x, level[current].boxes[i].y);
     }
 
     fish = [];
-    for(var i = 0; i < level.fish.length; i++)
+    for(var i = 0; i < level[current].fish.length; i++)
     {
-        addFish(level.fish[i].x, level.fish[i].y);
+        addFish(level[current].fish[i].x, level[current].fish[i].y);
     }
 }
 
@@ -91,12 +93,12 @@ function restart()
 {
     player.velY = 0;
     player.velX = 0;
-    player.x = level.x - offset;
-    player.y = 0;
+    player.x = level[current].x - offset;
+    player.y = level[current].y;
     blocks = [];
-    for(var i = 0; i < level.blocks.length; i++)
+    for(var i = 0; i < level[current].blocks.length; i++)
     {
-        addBlock(level.blocks[i].x, level.blocks[i].y);
+        addBlock(level[current].blocks[i].x, level[current].blocks[i].y);
     }
 }
 
